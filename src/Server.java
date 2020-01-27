@@ -29,6 +29,13 @@ public class Server extends JFrame {
 	private static Logger logger;
 
 	public static void main(String[] args) {
+		 try {
+	            if (Integer.parseInt(Updater.getLatestVersion()) > 0) {
+	                new UpdateInfo(Updater.getWhatsNew());
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
 		startlog();
 		while (true) {
 			net = new Server();

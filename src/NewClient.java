@@ -534,6 +534,14 @@ public class NewClient extends JPanel implements ActionListener {
 	}
 
 	public static void main(String[] args) {
+		//update checker 
+		try {
+	            if (Integer.parseInt(Updater.getLatestVersion()) > 0) {
+	                new UpdateInfo(Updater.getWhatsNew());
+	            }
+	        } catch (Exception ex) {
+	            ex.printStackTrace();
+	        }
 		//Schedule a job for the event dispatching thread:
 		//creating and showing this application's GUI.
 		SwingUtilities.invokeLater(new Runnable() {
