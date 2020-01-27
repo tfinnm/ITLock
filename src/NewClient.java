@@ -19,7 +19,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class NewClient extends JPanel implements ActionListener {
-	private String newline = "\n";
+	private static final long serialVersionUID = 1796011690233971461L;
 	protected static final String textFieldString = "Username";
 	protected static final String passwordFieldString = "Password";
 	protected static final String ftfString = "Date";
@@ -29,11 +29,10 @@ public class NewClient extends JPanel implements ActionListener {
 	private static JTabbedPane tabbedPane;
 	private static JRadioButton unLockButton;
 	private static JRadioButton lockButton;
-	private static JRadioButton RemoteButton;
 	private JCheckBox restartButton;
 	private JCheckBox timerButton;
-	private JComboBox hostList;
-	private JComboBox rHostList;
+	private JComboBox<String> hostList;
+	private JComboBox<String> rHostList;
 	private JProgressBar advance;
 	private JTextField timeField;
 	private JTextField reasonField;
@@ -173,7 +172,7 @@ public class NewClient extends JPanel implements ActionListener {
 		advance.setValue(0);
 		panel1.add(advance, BorderLayout.SOUTH);
 
-		hostList = new JComboBox(hosts); //data has type Object[]
+		hostList = new JComboBox<String>(hosts); //data has type Object[]
 		hostList.setEditable(true);
 		hostList.setEnabled(false);
 		panel1s1.add(hostList);
@@ -228,7 +227,7 @@ public class NewClient extends JPanel implements ActionListener {
 
 		panel2.setLayout(new BorderLayout());
 		JPanel panel2t = new JPanel(new BorderLayout());
-		rHostList = new JComboBox(hosts); //data has type Object[]
+		rHostList = new JComboBox<String>(hosts); //data has type Object[]
 		rHostList.setEditable(true);
 		panel2.add(rHostList, BorderLayout.NORTH);
 		panel2.add(panel2t, BorderLayout.CENTER);
@@ -377,6 +376,7 @@ public class NewClient extends JPanel implements ActionListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void actionPerformed(ActionEvent e) {
 		System.out.println(e.getActionCommand());
 		if (e.getActionCommand().equals("Username") || e.getActionCommand().equals("Password")) {
@@ -499,7 +499,6 @@ public class NewClient extends JPanel implements ActionListener {
 			try {
 				Desktop.getDesktop().browse(new URI("http://tfinnm.tk/ITLock"));
 			} catch (IOException | URISyntaxException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} else if (e.getActionCommand().equals("custom")) {
@@ -549,7 +548,6 @@ public class NewClient extends JPanel implements ActionListener {
 			getUsers();
 			getHosts();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -561,7 +559,6 @@ public class NewClient extends JPanel implements ActionListener {
 			try {
 				checkKey();
 			} catch (FileNotFoundException e) {
-				//TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

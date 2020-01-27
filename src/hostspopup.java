@@ -65,7 +65,7 @@ public class hostspopup implements ActionListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		hostselect = new JComboBox(hosts);
+		hostselect = new JComboBox<String>(hosts);
 		hostselect.setEditable(true);
 		panel.add(hostselect);
 

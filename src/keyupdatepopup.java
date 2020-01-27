@@ -25,8 +25,6 @@ import javax.swing.JTextField;
 
 public class keyupdatepopup {
 
-	private static final int FONT_SIZE = 24;
-	private static final Font FONT = new Font("Terminal", Font.BOLD, FONT_SIZE);
 
 
 	private static String[] hosts;
@@ -64,7 +62,7 @@ public class keyupdatepopup {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		hostselect = new JComboBox(hosts);
+		hostselect = new JComboBox<String>(hosts);
 		hostselect.setEditable(true);
 		panel.add(hostselect);
 

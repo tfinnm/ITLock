@@ -68,7 +68,7 @@ public class custompopup {
 		}
 		panelb = new JPanel(new BorderLayout());
 
-		hostselect = new JComboBox(hosts);
+		hostselect = new JComboBox<String>(hosts);
 		hostselect.setEditable(true);
 		panelb.add(hostselect,BorderLayout.NORTH);
 
