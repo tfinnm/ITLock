@@ -1,12 +1,10 @@
 import javax.swing.*;
-import javax.swing.text.*;
 
 import java.awt.*;              //for layout managers and more
 import java.awt.event.*;        //for action events
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;

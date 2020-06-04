@@ -9,6 +9,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.FileHandler;
+import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -342,6 +343,28 @@ public class Server extends JFrame {
 		logger = Logger.getLogger("MyLog");  
 		FileHandler fh;  
 
+		logger.addHandler(new Handler() {
+
+			@Override
+			public void close() throws SecurityException {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void flush() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void publish(LogRecord arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
 		try {  
 
 			// This block configure the logger with handler and formatter  
