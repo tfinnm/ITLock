@@ -1,11 +1,14 @@
 
 
 import java.awt.AWTException;
+import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.FileHandler;
@@ -14,6 +17,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 
@@ -30,13 +34,13 @@ public class Server extends JFrame {
 	private static Logger logger;
 
 	public static void main(String[] args) {
-		 try {
-	            if (Integer.parseInt(Updater.getLatestVersion()) > 0) {
-	                new UpdateInfo(Updater.getWhatsNew());
-	            }
-	        } catch (Exception ex) {
-	            ex.printStackTrace();
-	        }
+		try {
+			if (Integer.parseInt(Updater.getLatestVersion()) > 0) {
+				new UpdateInfo(Updater.getWhatsNew());
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 		startlog();
 		while (true) {
 			net = new Server();
@@ -189,17 +193,13 @@ public class Server extends JFrame {
 					lockscreen.remoteUnlock = true;
 					logger.info("Unlocked by "+connection.getInetAddress());
 				} else if (message[0].equals("cmd")) {
-					ArrayList<String> stringnamess = new ArrayList<String>();
-					ArrayList<String> intnames = new ArrayList<String>();
-					ArrayList<String> boolnames = new ArrayList<String>();
+					ArrayList<String> stringnames = new ArrayList<String>();
 					ArrayList<String> strings = new ArrayList<String>();
-					ArrayList<Integer> ints = new ArrayList<Integer>();
-					ArrayList<Boolean> bools = new ArrayList<Boolean>();
 					boolean comment = false;
 
 					String[] cmds = message[1].split("\n");
 					for (int i=0; i < cmds.length; i++) {
-						String[] subc = cmds[i].split("<<<");
+						String[] subc = cmds[i].split("<<");
 						if (cmds[i].startsWith("//") || cmds[i].startsWith("/*") || cmds[i].startsWith("#") || cmds[i].equals("") || (cmds[i] == null) || comment) {
 							if (cmds[i].startsWith("/*")) {
 								comment = true;
@@ -207,8 +207,8 @@ public class Server extends JFrame {
 							if (cmds[i].startsWith("*/")) {
 								comment = false;
 							} 
-						} else if ((cmds[i].indexOf("<<<") < cmds[i].indexOf(">>>"))) {
-							String[] subsubc = subc[1].split(">>>");
+						} else if ((cmds[i].indexOf("<<") < cmds[i].indexOf(">>"))) {
+							String[] subsubc = subc[1].split(">>");
 							String subsubcmd = subsubc[0];
 							if (subsubcmd.equals("closeWindows")) {
 								try {
@@ -224,22 +224,97 @@ public class Server extends JFrame {
 								}
 							} else if(subsubcmd.equals("goto")) {
 								i = Math.abs(Integer.valueOf(subsubc[1])-2);
+							} else if(subsubcmd.equals("gotoif")) {
+								String[] args = subsubc[1].split(";");
+								System.out.print(Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1]))));
+								if (Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1])))) {
+									i = Math.abs(Integer.valueOf(args[0])-2);
+								}
 							} else if(subsubcmd.equals("out")) {
 								JOptionPane.showMessageDialog(null, subsubc[1], "ITLScript", JOptionPane.INFORMATION_MESSAGE);
 							} else if(subsubcmd.equals("break") || subsubcmd.equals("exit")) {
 								i = cmds.length;
+							} else if(subsubcmd.equals("confirm")) {
+								String[] args = subsubc[1].split(";");
+								boolean in = JOptionPane.showConfirmDialog(null, args[1], "ITLScript", JOptionPane.YES_NO_OPTION) == 0;
+								if(stringnames.indexOf(args[0]) != -1) {
+									strings.set(stringnames.indexOf(args[0]), String.valueOf(in));
+								} else {
+									stringnames.add(args[0]);
+									strings.add(String.valueOf(in));
+								}
+								System.out.print(stringnames);
+								System.out.println(strings);
 							} else if(subsubcmd.equals("prompt")) {
 								String[] args = subsubc[1].split(";");
-								boolean in = JOptionPane.showConfirmDialog(null, args[1], "ITLScript", JOptionPane.QUESTION_MESSAGE) == 0;
-								if(boolnames.indexOf(args[0]) != -1) {
-									bools.set(boolnames.indexOf(args[0]), in);
+								String in = JOptionPane.showInputDialog(null, args[1], "ITLScript", JOptionPane.QUESTION_MESSAGE);
+								if(stringnames.indexOf(args[0]) != -1) {
+									strings.set(stringnames.indexOf(args[0]), in);
 								} else {
-									boolnames.add(args[0]);
-									bools.add(in);
+									stringnames.add(args[0]);
+									strings.add(in);
 								}
-								System.out.print(boolnames);
-								System.out.println(bools);
+								System.out.print(stringnames);
+								System.out.println(strings);
+							} else if(subsubcmd.equals("compare")) {
+								String[] args = subsubc[1].split(";");
+								String var1 = strings.get(stringnames.indexOf(args[1]));
+								String var2 = strings.get(stringnames.indexOf(args[2]));
+								boolean compared = var1.equals(var2);
+								if(stringnames.indexOf(args[0]) != -1) {
+									strings.set(stringnames.indexOf(args[0]), String.valueOf(compared));
+								} else {
+									stringnames.add(args[0]);
+									strings.add(String.valueOf(compared));
+								}
+								System.out.print(stringnames);
+								System.out.println(strings);
+							} else if(subsubcmd.equals("setvar")) {
+								String[] args = subsubc[1].split(";");
+								if(stringnames.indexOf(args[0]) != -1) {
+									strings.set(stringnames.indexOf(args[0]), args[1]);
+								} else {
+									stringnames.add(args[0]);
+									strings.add(args[1]);
+								}
+								System.out.print(stringnames);
+								System.out.println(strings);
+							} else if(subsubcmd.equals("increment")) {
+								String[] args = subsubc[1].split(";");
+								if(stringnames.indexOf(args[0]) != -1) {
+									int value = Integer.parseInt(strings.get(stringnames.indexOf(args[0])))+1;
+									strings.set(stringnames.indexOf(args[0]), String.valueOf(value));
+								} else {
+									stringnames.add(args[0]);
+									strings.add("1");
+								}
+								System.out.print(stringnames);
+								System.out.println(strings);
+							} else if(subsubcmd.equals("decrement")) {
+								String[] args = subsubc[1].split(";");
+								if(stringnames.indexOf(args[0]) != -1) {
+									int value = Integer.parseInt(strings.get(stringnames.indexOf(args[0])))-1;
+									strings.set(stringnames.indexOf(args[0]), String.valueOf(value));
+								} else {
+									stringnames.add(args[0]);
+									strings.add("-1");
+								}
+								System.out.print(stringnames);
+								System.out.println(strings);
+							} else if (subsubcmd.equals("screencap")) {
+								try {
+									SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH-mm-ss z");  
+									Date date = new Date(System.currentTimeMillis());  
+									String FName = String.valueOf(formatter.format(date));  
+									System.out.print(FName);
+									Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+									BufferedImage capture = new Robot().createScreenCapture(screenRect);
+									ImageIO.write(capture, "png", new File(FName+".png"));
+								} catch (AWTException e) {
+									e.printStackTrace();
+								}
 							} else if(subsubcmd.equals("shutdown")) {
+
 								String[] args = subsubc[1].split(";");
 								if (args.length < 2) {
 									String temp = args[0];
@@ -279,6 +354,15 @@ public class Server extends JFrame {
 								String[] pass = {args[1],args[0],"false"};
 								lockscreen.main(pass);
 								logger.info("Unlocked by "+connection.getInetAddress()+" (via ITLScript) for reason: "+args[1]);
+							}  else if(subsubcmd.equals("exec")) {
+								Runtime runtime = Runtime.getRuntime();
+								try {
+									runtime.exec(subsubc[1]);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								logger.info(connection.getInetAddress()+" executed \""+subsubc[1]+"\"");
 							}
 
 						} else {
@@ -348,23 +432,23 @@ public class Server extends JFrame {
 			@Override
 			public void close() throws SecurityException {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void flush() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void publish(LogRecord arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
-		
+
 		try {  
 
 			// This block configure the logger with handler and formatter  
