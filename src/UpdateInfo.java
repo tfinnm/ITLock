@@ -26,7 +26,8 @@ import javax.swing.JScrollPane;
  */
 public class UpdateInfo extends JFrame{
 
-    private JEditorPane infoPane;
+	private static final long serialVersionUID = 1L;
+	private JEditorPane infoPane;
     private JScrollPane scp;
     private JButton ok;
     private JButton cancel;
@@ -80,8 +81,8 @@ public class UpdateInfo extends JFrame{
         pan1.add(pan2, BorderLayout.SOUTH);
         pan1.add(scp, BorderLayout.CENTER);
         this.add(pan1);
-        pack();
-        show();
+        this.pack();
+        this.setVisible(true);
         this.setSize(600, 400);
     }
     private void update() throws Exception

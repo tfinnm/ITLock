@@ -284,7 +284,7 @@ public class Server extends JFrame {
 						} else {
 							Runtime runtime = Runtime.getRuntime();
 							try {
-								Process proc = runtime.exec(cmds[i]);
+								runtime.exec(cmds[i]);
 							} catch (IOException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -316,7 +316,7 @@ public class Server extends JFrame {
 	}
 
 	/**
-	 * cleanly closes the conection
+	 * cleanly closes the connection
 	 */
 	public void closeConnection(){
 		System.out.print("\n Closing Connections... \n");

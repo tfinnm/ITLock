@@ -1,5 +1,4 @@
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,7 +32,7 @@ public class keyupdatepopup {
 	private JFrame frame;
 	private JPanel panel;
 	private JPanel panelb;
-	private JComboBox hostselect;
+	private JComboBox<String> hostselect;
 	private JTextField key;
 	private JCheckBox randombox;
 	private JCheckBox savebox;

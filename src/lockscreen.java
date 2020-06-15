@@ -53,7 +53,7 @@ public class lockscreen  extends JPanel{
 			stopTimers();
 			Runtime run = Runtime.getRuntime();
 			try {
-				Process pro = run.exec("shutdown /a");
+				run.exec("shutdown /a");
 			} catch (IOException e2) {
 				// TODO Auto-generated catch block
 				e2.printStackTrace();
@@ -198,7 +198,7 @@ public class lockscreen  extends JPanel{
 					if (locked) {
 						Runtime runtime = Runtime.getRuntime();
 						try {
-							Process proc = runtime.exec("shutdown -s -t 0");
+							runtime.exec("shutdown -s -t 0");
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

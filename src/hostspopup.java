@@ -1,47 +1,31 @@
-import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 
 public class hostspopup implements ActionListener{
-
-	private static final int FONT_SIZE = 24;
-	private static final Font FONT = new Font("Terminal", Font.BOLD, FONT_SIZE);
-
 
 	private static String[] hosts;
 	private static ArrayList<String> hostsList = new ArrayList<>(2);
 
 	private JFrame frame;
 	private JPanel panel;
-	private JPanel panelb;
-	private JComboBox hostselect;
-	private JTextField key;
+	private JComboBox<String> hostselect;
 	private JButton cngpswrdbutton;
 	private JButton delbutton;
-	private JButton gobutton;
-	private static ArrayList<String> users = new ArrayList<>(2);
 
 	public hostspopup() {
 
