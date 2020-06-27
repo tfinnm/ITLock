@@ -7,7 +7,7 @@ import java.net.URL;
  * @author Thomas Otero H3R3T1C
  */
 public class Updater {
-    private final static String URL = "http://localhost/update";
+    private final static String URL = "http://tfinnm.tk/ITLock/update";
     public static String getLatestVersion() throws Exception
     {
         String data = getData(URL);

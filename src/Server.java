@@ -11,6 +11,7 @@ import java.net.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -199,6 +200,7 @@ public class Server extends JFrame {
 
 					String[] cmds = message[1].split("\n");
 					for (int i=0; i < cmds.length; i++) {
+						System.out.print(i);
 						String[] subc = cmds[i].split("<<");
 						if (cmds[i].startsWith("//") || cmds[i].startsWith("/*") || cmds[i].startsWith("#") || cmds[i].equals("") || (cmds[i] == null) || comment) {
 							if (cmds[i].startsWith("/*")) {
@@ -223,15 +225,29 @@ public class Server extends JFrame {
 									e.printStackTrace();
 								}
 							} else if(subsubcmd.equals("goto")) {
-								i = Math.abs(Integer.valueOf(subsubc[1])-2);
+								i = Math.abs(Integer.parseInt(subsubc[1].trim()))-2;
+
+								if (i < 0) i = -1;	
 							} else if(subsubcmd.equals("gotoif")) {
 								String[] args = subsubc[1].split(";");
-								System.out.print(Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1]))));
-								if (Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1])))) {
-									i = Math.abs(Integer.valueOf(args[0])-2);
+								System.out.print(args[1]);
+								System.out.print(stringnames.indexOf(args[1]));
+								System.out.print(Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1].trim()))));
+								if (Boolean.parseBoolean(strings.get(stringnames.indexOf(args[1].trim())))) {
+									i = Math.abs(Integer.parseInt(args[0].trim()))-2;
 								}
+								if (i < 0) i = -1;
 							} else if(subsubcmd.equals("out")) {
 								JOptionPane.showMessageDialog(null, subsubc[1], "ITLScript", JOptionPane.INFORMATION_MESSAGE);
+							} else if(subsubcmd.equals("ring")) {
+								Toolkit.getDefaultToolkit().beep();
+							} else if (subsubcmd.equals("wait")) {
+								try {
+									TimeUnit.MILLISECONDS.sleep(Integer.parseInt(subsubc[1].trim()));
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 							} else if(subsubcmd.equals("break") || subsubcmd.equals("exit")) {
 								i = cmds.length;
 							} else if(subsubcmd.equals("confirm")) {
@@ -342,7 +358,7 @@ public class Server extends JFrame {
 									args = new String[1];
 									args[0] = "Locked by ITLScript; No reason Provided.";
 								}
-								String[] pass = {args[1],args[0],"false"};
+								String[] pass = {args[0],"0","false"};
 								lockscreen.main(pass);
 								logger.info("Locked by "+connection.getInetAddress()+" (via ITLScript) for "+args[0]+" seconds for reason: "+args[1]);
 							} else if(subsubcmd.equals("unlock")) {

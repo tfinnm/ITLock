@@ -1,10 +1,14 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.awt.*;              //for layout managers and more
 import java.awt.event.*;        //for action events
 import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -239,7 +243,34 @@ public class NewClient extends JPanel implements ActionListener {
 		rGoButton = new JButton("Send Command");
 		rGoButton.setActionCommand("rgo");
 		rGoButton.addActionListener(this);
-		panel2.add(rGoButton, BorderLayout.SOUTH);
+		JPanel p2s = new JPanel(new BorderLayout());
+		panel2.add(p2s, BorderLayout.SOUTH);
+		p2s.add(rGoButton, BorderLayout.WEST);
+		JButton load = new JButton("Load Script");
+		load.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser fc = new JFileChooser();
+				FileFilter filter = new FileNameExtensionFilter("ITLock Script File", new String[] {"ITLScript", "ITLS"});
+				fc.setFileFilter(filter);
+				fc.addChoosableFileFilter(filter);
+
+				int returnVal = fc.showOpenDialog(null);
+
+		        if (returnVal == JFileChooser.APPROVE_OPTION) {
+		            File file = fc.getSelectedFile();
+		            try {
+						CMDField.setText(new String(Files.readAllBytes(Paths.get(file.toURI()))));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+		        }
+
+			}
+			
+		});
+		p2s.add(load, BorderLayout.EAST);
 
 
 		JPanel panel3 = new JPanel();
@@ -280,15 +311,15 @@ public class NewClient extends JPanel implements ActionListener {
 		custombutton.addActionListener(this);
 		compsToExperiment.add(custombutton);
 
-		JButton blbutton = new JButton("Manage Blacklist");
-		blbutton.setActionCommand("bl");
-		blbutton.addActionListener(this);
-		compsToExperiment.add(blbutton);
-
-		JButton wlbutton = new JButton("Manage Whitelist");
-		wlbutton.setActionCommand("wl");
-		wlbutton.addActionListener(this);
-		compsToExperiment.add(wlbutton);
+//		JButton blbutton = new JButton("Manage Blacklist");
+//		blbutton.setActionCommand("bl");
+//		blbutton.addActionListener(this);
+//		compsToExperiment.add(blbutton);
+//
+//		JButton wlbutton = new JButton("Manage Whitelist");
+//		wlbutton.setActionCommand("wl");
+//		wlbutton.addActionListener(this);
+//		compsToExperiment.add(wlbutton);
 
 
 		//Add controls to set up horizontal and vertical gaps
